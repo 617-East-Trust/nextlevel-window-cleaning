@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import { CheckCircle, ChevronDown, ChevronUp, ArrowRight, Phone } from "lucide-react";
 import { RESIDENTIAL_WINDOW_CLEANING_HERO } from "@/config/images";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/SchemaMarkup";
@@ -151,6 +152,7 @@ export default function ResidentialWindowCleaning() {
         </div>
       </section>
 
+      <ServiceReviews ids={["aguilera", "pruitt"]} />
       <CTASection title="Ready for Cleaner Windows?" subtitle="Get a free estimate for residential window cleaning in Sanford, NC." />
     </Layout>
   );

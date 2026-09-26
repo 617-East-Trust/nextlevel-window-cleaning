@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/SchemaMarkup";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import { ArrowRight, Phone, Sparkles, Droplets, Wind, Lightbulb } from "lucide-react";
 import { GALLERY } from "@/config/images";
 
@@ -72,6 +73,7 @@ export default function Residential() {
           </div>
         </div>
       </section>
+      <ServiceReviews ids={["aguilera", "jb"]} />
       <CTASection title="Ready to Book Residential Service?" subtitle="Get a free estimate for your Sanford, NC home today." />
     </Layout>
   );

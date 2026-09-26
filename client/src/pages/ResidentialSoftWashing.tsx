@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/SchemaMarkup";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import { CheckCircle, ChevronDown, ChevronUp, ArrowRight, Phone } from "lucide-react";
 import { SOFT_WASHING_HERO } from "@/config/images";
 
@@ -84,6 +85,7 @@ export default function ResidentialSoftWashing() {
         <h2 className="section-heading text-2xl lg:text-3xl text-gray-900 mb-6">Soft Washing FAQs</h2>
         <div className="ml-5 flex flex-col gap-3">{faqs.map(({ q, a }) => <FAQItem key={q} q={q} a={a} />)}</div>
       </div></section>
+      <ServiceReviews ids={["jb", "jimenez"]} />
       <CTASection title="Safe Cleaning for Your Home" subtitle="Get a free soft washing estimate in Sanford, NC." />
     </Layout>
   );

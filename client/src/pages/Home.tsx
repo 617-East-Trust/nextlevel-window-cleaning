@@ -17,6 +17,8 @@ import {
   HERO_GENERATED, GALLERY, RESIDENTIAL_WINDOW_CLEANING_HERO 
 } from "@/config/images";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
+import { GoogleRatingStrip, ReviewQuote } from "@/components/GoogleReviews";
+import { GOOGLE_REVIEWS, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, GBP_SEARCH_URL } from "@/data/reviews";
 
 // Real job photos from Next Level Window Cleaning
 const HERO_IMG = HERO_GENERATED;
@@ -49,7 +51,21 @@ const localBusinessSchema = {
   "openingHoursSpecification": [
     { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "07:00", "closes": "18:00" }
   ],
-  "sameAs": ["https://www.facebook.com/people/Next-Level-Window-Cleaning/61579913446585/"],
+  "sameAs": ["https://www.google.com/maps?cid=17541810205668916141", "https://www.facebook.com/people/Next-Level-Window-Cleaning/61579913446585/"],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": GOOGLE_RATING,
+    "bestRating": "5",
+    "worstRating": "1",
+    "reviewCount": String(GOOGLE_REVIEW_COUNT)
+  },
+  "review": GOOGLE_REVIEWS.map((r) => ({
+    "@type": "Review",
+    "author": { "@type": "Person", "name": r.author },
+    "datePublished": r.date,
+    "reviewRating": { "@type": "Rating", "ratingValue": String(r.rating), "bestRating": "5", "worstRating": "1" },
+    "reviewBody": r.text
+  })),
   "hasOfferCatalog": {
     "@type": "OfferCatalog", "name": "Exterior Cleaning Services",
     "itemListElement": [
@@ -124,26 +140,9 @@ const serviceAreas = [
   "Carbonton, NC", "Lemon Springs, NC",
 ];
 
-const testimonials = [
-  {
-    name: "Sarah M.",
-    location: "Sanford, NC",
-    rating: 5,
-    text: "Adam and his team did an incredible job on our windows and pressure washed the driveway. Everything looks brand new. Super professional and easy to work with.",
-  },
-  {
-    name: "James T.",
-    location: "Cameron, NC",
-    rating: 5,
-    text: "Called for a quote on a Friday, they were out Monday morning. Fast, thorough, and reasonably priced. Will definitely use them again.",
-  },
-  {
-    name: "Linda K.",
-    location: "Sanford, NC",
-    rating: 5,
-    text: "We hired them for our storefront windows. They were on time, worked quickly, and the results were excellent. Our customers have already commented on how clean the front looks.",
-  },
-];
+// Curated order for the homepage grid — strongest, most specific Google reviews first.
+// Full review data lives in @/data/reviews (synced from the Google Business Profile).
+const HOME_REVIEW_IDS = ["aguilera", "steve", "boone", "fortin", "jb", "pruitt"];
 
 const faqPreview = [
   {
@@ -191,33 +190,9 @@ export default function Home() {
     "/"
   );
 
-  const reviewSchema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": "https://nextlevelwindowsnc.com/#business",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5",
-      "reviewCount": testimonials.length.toString()
-    },
-    "review": testimonials.map(t => ({
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": t.name
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": t.rating.toString()
-      },
-      "reviewBody": t.text
-    }))
-  };
-
   return (
     <Layout>
       <SchemaMarkup schema={localBusinessSchema} />
-      <SchemaMarkup schema={reviewSchema} />
       {/* ── 1. HERO ── */}
       <section className="relative min-h-[580px] lg:min-h-[680px] flex items-center overflow-hidden">
         {/* Background image */}
@@ -485,32 +460,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 8. TESTIMONIALS ── */}
+      {/* ── 8. REVIEWS (real Google reviews — synced from GBP) ── */}
       <section className="py-16 lg:py-20 bg-sky-tint">
         <div className="container">
           <div className="mb-10">
             <h2 className="section-heading text-3xl lg:text-4xl text-gray-900 mb-3">
               What Our Customers Say
             </h2>
-            <p className="text-gray-500 text-base ml-5">Real feedback from real neighbors.</p>
+            <p className="text-gray-500 text-base ml-5 mb-5">
+              Real reviews from real neighbors — every one left on Google by an actual customer.
+            </p>
+            <div className="ml-5">
+              <GoogleRatingStrip />
+            </div>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {testimonials.map(({ name, location, rating, text }) => (
-              <div key={name} className="service-card p-6">
-                <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: rating }).map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" className="text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4 italic">"{text}"</p>
-                <div>
-                  <p className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Manrope, sans-serif' }}>{name}</p>
-                  <p className="text-gray-400 text-xs flex items-center gap-1 mt-0.5">
-                    <MapPin size={11} /> {location}
-                  </p>
-                </div>
-              </div>
+            {HOME_REVIEW_IDS.map((id) => (
+              <ReviewQuote key={id} id={id} />
             ))}
+          </div>
+          <div className="mt-10 text-center">
+            <a href={GBP_SEARCH_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-bold hover:opacity-80 transition-opacity"
+              style={{ color: 'var(--brand-aqua)', fontFamily: 'Manrope, sans-serif' }}>
+              Read all {GOOGLE_REVIEW_COUNT} reviews on Google <ArrowRight size={15} />
+            </a>
           </div>
         </div>
       </section>

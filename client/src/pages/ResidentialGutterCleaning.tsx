@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/SchemaMarkup";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import { CheckCircle, ChevronDown, ChevronUp, Phone, ArrowRight } from "lucide-react";
 
 const PHONE = "(919) 348-9808";
@@ -138,6 +139,7 @@ export default function ResidentialGutterCleaning() {
         </div>
       </section>
 
+      <ServiceReviews ids={["steve", "fortin"]} />
       <CTASection
         title="Ready to Schedule Your Gutter Cleaning?"
         subtitle="Free estimates, same-week scheduling, and 100% satisfaction guaranteed."

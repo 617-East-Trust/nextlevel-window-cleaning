@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import { SchemaMarkup, ServiceSchema, BreadcrumbSchema } from "@/components/SchemaMarkup";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import { CheckCircle, ChevronDown, ChevronUp, ArrowRight, Phone } from "lucide-react";
 import { PRESSURE_WASHING_HERO } from "@/config/images";
 
@@ -161,6 +162,7 @@ export default function ResidentialPressureWashing() {
         </div>
       </section>
 
+      <ServiceReviews ids={["boone", "steve"]} />
       <CTASection title="Ready to Restore Your Exterior?" subtitle="Get a free pressure washing estimate for your Sanford, NC home." />
     </Layout>
   );

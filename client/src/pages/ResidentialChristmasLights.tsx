@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/SchemaMarkup";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import BeforeAfter from "@/components/BeforeAfter";
 import { CheckCircle, ArrowRight, Phone, Lightbulb, Star } from "lucide-react";
 import { CHRISTMAS_LIGHTS, BEFORE_AFTER } from "@/config/images";
@@ -192,6 +193,7 @@ export default function ResidentialChristmasLights() {
         </div>
       </section>
 
+      <ServiceReviews ids={["fortin", "pruitt"]} />
       <CTASection
         title="Book Your Holiday Light Installation"
         subtitle="Slots fill up fast. Contact us early to secure your spot in Sanford, NC."

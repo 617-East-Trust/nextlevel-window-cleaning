@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import { ServiceSchema, BreadcrumbSchema, SchemaMarkup } from "@/components/SchemaMarkup";
 import CTASection from "@/components/CTASection";
+import { ServiceReviews } from "@/components/GoogleReviews";
 import { CheckCircle, ChevronDown, ChevronUp, ArrowRight, Phone, Building2, Calendar, Shield, FileText, Clock } from "lucide-react";
 import { COMMERCIAL_HERO } from "@/config/images";
 
@@ -156,6 +157,7 @@ export default function Commercial() {
         </div>
       </section>
 
+      <ServiceReviews ids={["jimenez", "pruitt"]} />
       <CTASection title="Let's Talk About Your Property" subtitle="Request a commercial bid today. We respond the same day." />
     </Layout>
   );
