@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import CTASection from "@/components/CTASection";
+import ExteriorCarePlan from "@/components/ExteriorCarePlan";
 import useSEO from "@/hooks/useSEO";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
 import { HERO_GENERATED } from "@/config/images";
@@ -309,48 +310,51 @@ export default function Home() {
         <div className="hero-waterline hero-waterline-one" aria-hidden="true" />
         <div className="hero-waterline hero-waterline-two" aria-hidden="true" />
 
-        <div className="container relative z-10 py-16 md:py-24 lg:py-28">
-          <div className="max-w-2xl animate-fade-in-up">
-            <p className="hero-location-label">
-              <MapPin size={14} /> Serving Sanford &amp; nearby communities
-            </p>
-            <h1
-              className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-[-0.04em] text-white md:text-6xl lg:text-7xl"
-              style={{ fontFamily: "Manrope, sans-serif" }}
-            >
-              A clearer view of the work your property needs.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/88 md:text-xl">
-              Window cleaning, exterior washing, gutter cleaning, and holiday
-              light installation for homes and businesses around Sanford.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/get-a-free-estimate">
-                <span className="btn-coral btn-hero text-base px-7 py-3.5">
-                  Request a Free Estimate <ArrowRight size={18} />
-                </span>
-              </Link>
-              <a
-                href={PHONE_HREF}
-                className="btn-outline-white btn-hero text-base px-7 py-3.5"
+        <div className="container relative z-10 py-12 md:py-16 lg:py-20">
+          <div className="hero-clearline-layout">
+            <div className="max-w-2xl animate-fade-in-up">
+              <p className="hero-location-label">
+                <MapPin size={14} /> Serving Sanford &amp; nearby communities
+              </p>
+              <h1
+                className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-[-0.04em] text-white md:text-6xl lg:text-7xl"
+                style={{ fontFamily: "Manrope, sans-serif" }}
               >
-                <Phone size={18} /> Call or Text {PHONE_DISPLAY}
-              </a>
+                A clearer view of the work your property needs.
+              </h1>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/88 md:text-xl">
+                Window cleaning, exterior washing, gutter cleaning, and holiday
+                light installation for homes and businesses around Sanford.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={PHONE_HREF}
+                  className="btn-outline-white btn-hero text-base px-7 py-3.5"
+                >
+                  <Phone size={18} /> Call or Text {PHONE_DISPLAY}
+                </a>
+                <a href="#care-plan" className="hero-panel-anchor">
+                  Build an exterior care plan <ArrowRight size={17} />
+                </a>
+              </div>
+              <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {[
+                  [HomeIcon, "Residential & commercial"],
+                  [ShieldCheck, "Fully insured"],
+                  [MapPin, "Sanford-area service"],
+                ].map(([Icon, label]) => {
+                  const FeatureIcon = Icon as typeof HomeIcon;
+                  return (
+                    <div className="hero-detail-card" key={label as string}>
+                      <FeatureIcon size={16} />
+                      <span>{label as string}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {[
-                [HomeIcon, "Residential & commercial"],
-                [ShieldCheck, "Fully insured"],
-                [MapPin, "Sanford-area service"],
-              ].map(([Icon, label]) => {
-                const FeatureIcon = Icon as typeof HomeIcon;
-                return (
-                  <div className="hero-detail-card" key={label as string}>
-                    <FeatureIcon size={16} />
-                    <span>{label as string}</span>
-                  </div>
-                );
-              })}
+            <div id="care-plan" className="hero-care-plan-wrap">
+              <ExteriorCarePlan />
             </div>
           </div>
         </div>

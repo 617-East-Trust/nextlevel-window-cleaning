@@ -344,6 +344,16 @@
     isolation: isolate;
     background: var(--brand-charcoal);
   }
+  .hero-clearline-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(420px, 0.83fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5.5rem);
+  }
+  .hero-care-plan-wrap {
+    position: relative;
+    z-index: 2;
+  }
   .hero-clearline-overlay {
     background:
       linear-gradient(
@@ -416,6 +426,267 @@
   }
   .btn-hero {
     justify-content: center;
+  }
+  .hero-panel-anchor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.8rem 0.2rem;
+    color: oklch(0.96 0.02 215);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      gap 0.2s ease;
+  }
+  .hero-panel-anchor:hover {
+    gap: 0.7rem;
+    color: white;
+  }
+  .care-plan-panel {
+    padding: clamp(1.25rem, 2.4vw, 1.85rem);
+    border: 1px solid oklch(0.92 0.04 215 / 0.18);
+    border-radius: 1.35rem;
+    background:
+      linear-gradient(
+        145deg,
+        oklch(0.18 0.012 250 / 0.96),
+        oklch(0.12 0.01 250 / 0.96)
+      ),
+      oklch(0.15 0.01 250 / 0.94);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.1),
+      0 28px 60px oklch(0.1 0.01 245 / 0.38);
+    color: oklch(0.98 0.005 215);
+    backdrop-filter: blur(18px);
+  }
+  .care-plan-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid oklch(0.95 0.02 215 / 0.12);
+  }
+  .care-plan-kicker {
+    color: oklch(0.7 0.12 215);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .care-plan-header h2 {
+    margin-top: 0.35rem;
+    color: oklch(0.98 0.005 215);
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+  }
+  .care-plan-step-count {
+    flex: none;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid oklch(0.86 0.07 215 / 0.28);
+    border-radius: 999px;
+    background: oklch(0.62 0.11 215 / 0.16);
+    color: oklch(0.88 0.06 215);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .care-plan-fieldset {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 1rem 0 0;
+    border: 0;
+  }
+  .care-plan-fieldset legend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    color: oklch(0.89 0.025 215);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .care-plan-fieldset legend span {
+    color: var(--brand-coral);
+  }
+  .care-plan-property-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-top: 0.65rem;
+  }
+  .care-plan-property,
+  .care-plan-service,
+  .care-plan-season {
+    position: relative;
+    border: 1px solid oklch(0.92 0.03 215 / 0.16);
+    border-radius: 0.75rem;
+    background: oklch(0.98 0.01 215 / 0.055);
+    color: oklch(0.97 0.008 215);
+    text-align: left;
+    transition:
+      background-color 0.16s ease,
+      border-color 0.16s ease,
+      transform 0.16s ease;
+  }
+  .care-plan-property:hover,
+  .care-plan-service:hover,
+  .care-plan-season:hover {
+    border-color: oklch(0.77 0.1 215 / 0.55);
+    background: oklch(0.7 0.08 215 / 0.11);
+  }
+  .care-plan-property.is-selected,
+  .care-plan-service.is-selected,
+  .care-plan-season.is-selected {
+    border-color: oklch(0.75 0.13 215 / 0.9);
+    background: oklch(0.54 0.14 215 / 0.38);
+    box-shadow: inset 0 0 0 1px oklch(0.9 0.04 215 / 0.1);
+  }
+  .care-plan-property {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 67px;
+    padding: 0.75rem;
+  }
+  .care-plan-property > span,
+  .care-plan-service > span {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+  .care-plan-property strong,
+  .care-plan-service strong {
+    font-family: "Manrope", sans-serif;
+    font-size: 0.79rem;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+  .care-plan-property small,
+  .care-plan-service small {
+    color: oklch(0.72 0.018 215);
+    font-size: 0.64rem;
+    line-height: 1.25;
+  }
+  .care-plan-property.is-selected small,
+  .care-plan-service.is-selected small {
+    color: oklch(0.89 0.025 215);
+  }
+  .care-plan-check {
+    margin-left: auto;
+    color: oklch(0.91 0.12 160);
+  }
+  .care-plan-service-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+  }
+  .care-plan-service {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.52rem;
+    min-height: 70px;
+    padding: 0.65rem;
+  }
+  .care-plan-service > svg {
+    flex: none;
+    margin-top: 0.05rem;
+    color: oklch(0.72 0.13 215);
+  }
+  .care-plan-season-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.65rem;
+  }
+  .care-plan-season {
+    padding: 0.44rem 0.58rem;
+    border-radius: 999px;
+    color: oklch(0.86 0.02 215);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .care-plan-season.is-selected {
+    color: white;
+  }
+  .care-plan-summary {
+    margin-top: 1.1rem;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid oklch(0.91 0.03 215 / 0.13);
+    border-radius: 0.7rem;
+    background: oklch(0.98 0.01 215 / 0.055);
+  }
+  .care-plan-summary p {
+    color: oklch(0.65 0.07 215);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+  .care-plan-summary span {
+    display: block;
+    margin-top: 0.22rem;
+    color: oklch(0.89 0.02 215);
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .care-plan-cta {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+    padding: 0.84rem 1rem;
+    border: 0;
+    border-radius: 0.65rem;
+    background: var(--brand-coral);
+    color: white;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color 0.16s ease,
+      transform 0.16s ease,
+      box-shadow 0.16s ease;
+  }
+  .care-plan-cta:hover:not(:disabled) {
+    background: var(--brand-coral-dark);
+    box-shadow: 0 10px 24px oklch(0.7 0.17 45 / 0.25);
+    transform: translateY(-1px);
+  }
+  .care-plan-cta:disabled {
+    cursor: not-allowed;
+    background: oklch(0.34 0.018 245);
+    color: oklch(0.72 0.015 215);
+  }
+  .care-plan-help {
+    margin-top: 0.7rem;
+    color: oklch(0.66 0.018 215);
+    font-size: 0.65rem;
+    line-height: 1.45;
+    text-align: center;
   }
   .section-heading-clean {
     font-family: "Manrope", sans-serif;
@@ -703,7 +974,10 @@
 
 @media (max-width: 639px) {
   .hero-clearline {
-    min-height: 650px;
+    min-height: auto;
+  }
+  .hero-clearline-layout {
+    gap: 2rem;
   }
   .hero-clearline-overlay {
     background: linear-gradient(
@@ -721,6 +995,43 @@
   }
   .surface-compass {
     min-height: 340px;
+  }
+  .care-plan-panel {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+  .care-plan-header h2 {
+    font-size: 1.35rem;
+  }
+  .care-plan-property-grid,
+  .care-plan-service-grid {
+    gap: 0.42rem;
+  }
+  .care-plan-property {
+    min-height: 62px;
+    padding: 0.62rem;
+  }
+  .care-plan-service {
+    min-height: 67px;
+    padding: 0.58rem;
+  }
+  .care-plan-property small,
+  .care-plan-service small {
+    font-size: 0.6rem;
+  }
+  .care-plan-season {
+    font-size: 0.64rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero-clearline-layout {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  .hero-care-plan-wrap {
+    width: 100%;
   }
 }
 

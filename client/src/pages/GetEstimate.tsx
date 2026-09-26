@@ -13,12 +13,24 @@ import {
 } from "lucide-react";
 import { BreadcrumbSchema } from "@/components/SchemaMarkup";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/const";
+import {
+  getCarePlanNotes,
+  getCarePlanServiceValue,
+  getCarePlanSummary,
+  parseExteriorCarePlan,
+} from "@/lib/exteriorCarePlan";
 
 const WEB3FORMS_KEY =
   import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY";
 const FORM_DELIVERY_CONFIGURED = WEB3FORMS_KEY !== "YOUR_WEB3FORMS_ACCESS_KEY";
 
 type FormType = "residential" | "commercial";
+
+interface EstimateFormPrefill {
+  initialService?: string;
+  initialNotes?: string;
+  carePlanSummary?: string;
+}
 
 function SuccessMessage() {
   return (
@@ -51,7 +63,7 @@ function SuccessMessage() {
   );
 }
 
-function UnavailableFormNotice() {
+function UnavailableFormNotice({ carePlanSummary }: EstimateFormPrefill) {
   return (
     <div
       className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center"
@@ -66,9 +78,28 @@ function UnavailableFormNotice() {
       <p className="mt-2 text-sm leading-relaxed text-gray-600">
         Please call or text to discuss your property and request an estimate.
       </p>
+      {carePlanSummary && (
+        <p className="mt-3 text-sm font-semibold text-gray-700">
+          Care plan: {carePlanSummary}
+        </p>
+      )}
       <a href={PHONE_HREF} className="btn-coral mt-5">
         <Phone size={16} /> Call or Text {PHONE_DISPLAY}
       </a>
+    </div>
+  );
+}
+
+function CarePlanHandoff({ summary }: { summary: string }) {
+  return (
+    <div className="mb-6 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3">
+      <p
+        className="text-xs font-extrabold uppercase tracking-[0.1em] text-sky-700"
+        style={{ fontFamily: "Manrope, sans-serif" }}
+      >
+        Exterior Care Plan carried here
+      </p>
+      <p className="mt-1 text-sm leading-relaxed text-slate-700">{summary}</p>
     </div>
   );
 }
@@ -86,7 +117,11 @@ async function submitToWeb3Forms(payload: Record<string, string>) {
   return response.json();
 }
 
-function ResidentialForm() {
+function ResidentialForm({
+  initialService = "",
+  initialNotes = "",
+  carePlanSummary = "",
+}: EstimateFormPrefill) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -96,10 +131,10 @@ function ResidentialForm() {
     email: "",
     address: "",
     city: "",
-    service: "",
+    service: initialService,
     timeframe: "",
     bestTime: "",
-    notes: "",
+    notes: initialNotes,
   });
   const handleChange = (
     event: React.ChangeEvent<
@@ -141,7 +176,8 @@ function ResidentialForm() {
     }
   };
 
-  if (!FORM_DELIVERY_CONFIGURED) return <UnavailableFormNotice />;
+  if (!FORM_DELIVERY_CONFIGURED)
+    return <UnavailableFormNotice carePlanSummary={carePlanSummary} />;
   if (submitted) return <SuccessMessage />;
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -324,7 +360,11 @@ function ResidentialForm() {
   );
 }
 
-function CommercialForm() {
+function CommercialForm({
+  initialService = "",
+  initialNotes = "",
+  carePlanSummary = "",
+}: EstimateFormPrefill) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -335,11 +375,11 @@ function CommercialForm() {
     email: "",
     address: "",
     propertyType: "",
-    service: "",
+    service: initialService,
     frequency: "",
     scope: "",
     schedule: "",
-    notes: "",
+    notes: initialNotes,
   });
   const handleChange = (
     event: React.ChangeEvent<
@@ -384,7 +424,8 @@ function CommercialForm() {
     }
   };
 
-  if (!FORM_DELIVERY_CONFIGURED) return <UnavailableFormNotice />;
+  if (!FORM_DELIVERY_CONFIGURED)
+    return <UnavailableFormNotice carePlanSummary={carePlanSummary} />;
   if (submitted) return <SuccessMessage />;
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -601,7 +642,13 @@ export default function GetEstimate() {
     "Request a free window cleaning or exterior cleaning estimate in Sanford, NC. Locally owned and fully insured.",
     "/get-a-free-estimate"
   );
-  const [formType, setFormType] = useState<FormType>("residential");
+  const carePlan = parseExteriorCarePlan(window.location.search);
+  const carePlanSummary = getCarePlanSummary(carePlan);
+  const carePlanNotes = getCarePlanNotes(carePlan);
+  const initialFormType: FormType =
+    carePlan.property === "commercial" ? "commercial" : "residential";
+  const [formType, setFormType] = useState<FormType>(initialFormType);
+  const carePlanService = getCarePlanServiceValue(carePlan, formType);
   return (
     <Layout>
       <BreadcrumbSchema
@@ -647,6 +694,7 @@ export default function GetEstimate() {
       </section>
       <section className="bg-white py-12">
         <div className="container max-w-2xl">
+          {carePlanSummary && <CarePlanHandoff summary={carePlanSummary} />}
           <div
             className="mb-8 flex overflow-hidden rounded-xl border border-gray-200"
             aria-label="Estimate type"
@@ -679,9 +727,17 @@ export default function GetEstimate() {
             </button>
           </div>
           {formType === "residential" ? (
-            <ResidentialForm />
+            <ResidentialForm
+              initialService={carePlanService}
+              initialNotes={carePlanNotes}
+              carePlanSummary={carePlanSummary}
+            />
           ) : (
-            <CommercialForm />
+            <CommercialForm
+              initialService={carePlanService}
+              initialNotes={carePlanNotes}
+              carePlanSummary={carePlanSummary}
+            />
           )}
           <div className="mt-8 flex flex-wrap justify-center gap-5 border-t border-gray-100 pt-6">
             {["Fully Insured", "Locally Owned", "Free Estimates"].map(item => (

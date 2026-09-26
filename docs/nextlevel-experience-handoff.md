@@ -15,6 +15,8 @@ The site now uses the **Clearline Fieldbook** direction: a bright, local-service
 - Kept the design deliberately **2D-first**. CSS glass planes, waterline geometry, and controlled depth provide the visual character without a WebGL payload or a failure point on mobile.
 - Retained the `(919) 348-9808` call/text line as the primary action across the revised experience.
 - Improved the service library route (`/our-work`) so it now guides visitors to six service paths instead of loading gallery assets that currently fail in browsers.
+- Added the hero **Exterior Care Plan**: a three-step property, service/surface, and optional seasonal-focus selection that carries a readable summary into the estimate route.
+- Mapped the plan to the estimate form when Web3Forms is configured; with the current no-key fallback, the call/text panel still receives and displays the selected plan.
 
 ### Integrity and conversion safeguards
 
@@ -34,18 +36,21 @@ The site now uses the **Clearline Fieldbook** direction: a bright, local-service
 
 ## Validation completed
 
-| Check                           | Result                                                                                                         |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `pnpm check`                    | Passed — TypeScript reports no errors.                                                                         |
-| `pnpm build`                    | Passed — Vite build, all 22 prerendered routes, server bundle, sitemap, and robots output completed.           |
-| Formatting                      | Passed — Prettier check on all changed source and documentation files.                                         |
-| Desktop preview                 | Passed at 1440 px: no horizontal overflow, no failed images, no console warnings.                              |
-| Mobile preview                  | Passed at 390 px: no horizontal overflow; sticky call/estimate bar is present.                                 |
-| Homepage integrity              | Passed: no `aggregateRating`, no testimonial heading, no failed images, and six estimate links are reachable.  |
-| Keyboard menu                   | Passed: Enter opens the service menu; Escape closes it.                                                        |
-| Reduced motion                  | Passed: `prefers-reduced-motion: reduce` sets scroll behavior to `auto`.                                       |
-| Estimate/contact delivery guard | Passed: with no Web3Forms key configured, both routes show their call/text fallback and no nonfunctional form. |
-| Service library                 | Passed: no broken gallery images, no gallery image requests, six service links, and no console warnings.       |
+| Check                           | Result                                                                                                                                              |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm check`                    | Passed — TypeScript reports no errors.                                                                                                              |
+| `pnpm build`                    | Passed — Vite build, all 22 prerendered routes, server bundle, sitemap, and robots output completed.                                                |
+| Formatting                      | Passed — Prettier check on all changed source and documentation files.                                                                              |
+| Desktop preview                 | Passed at 1440 px: no horizontal overflow, no failed images, no console warnings.                                                                   |
+| Mobile preview                  | Passed at 390 px: no horizontal overflow; sticky call/estimate bar is present.                                                                      |
+| Homepage integrity              | Passed: no `aggregateRating`, no testimonial heading, no failed images, and six estimate links are reachable.                                       |
+| Keyboard menu                   | Passed: Enter opens the service menu; Escape closes it.                                                                                             |
+| Reduced motion                  | Passed: `prefers-reduced-motion: reduce` sets scroll behavior to `auto`.                                                                            |
+| Estimate/contact delivery guard | Passed: with no Web3Forms key configured, both routes show their call/text fallback and no nonfunctional form.                                      |
+| Service library                 | Passed: no broken gallery images, no gallery image requests, six service links, and no console warnings.                                            |
+| Exterior Care Plan              | Passed: property, multi-service, and seasonal selections produce a URL-safe plan handoff; desktop/mobile checks show no overflow or image failures. |
+| Care-plan keyboard path         | Passed: native button focus plus Space selects a property; selected state and live plan summary update.                                             |
+| Configured-form prefill         | Passed in local validation: a commercial soft-wash plan selects the commercial route, prefills Soft Washing, and records the editable plan note.    |
 
 ## Owner decisions required before publishing
 
@@ -70,12 +75,14 @@ The site now uses the **Clearline Fieldbook** direction: a bright, local-service
 
 ## Performance note
 
-The final client JavaScript bundle is **551.53 kB raw / 142.22 kB gzip**; CSS is **128.09 kB raw / 21.13 kB gzip**. The gzip payload is within the project’s practical mobile target, but Vite still emits a raw-chunk warning. The next performance pass should split non-home routes or heavy UI dependencies rather than add more animation.
+The final client JavaScript bundle is **560.64 kB raw / 144.28 kB gzip**; CSS is **133.80 kB raw / 22.36 kB gzip**. The gzip payload is within the project’s practical mobile target, but Vite still emits a raw-chunk warning. The next performance pass should split non-home routes or heavy UI dependencies rather than add more animation.
 
 ## Files of interest
 
 - `client/src/pages/Home.tsx` — redesigned homepage, revised structured data, and claim-safe copy.
+- `client/src/components/ExteriorCarePlan.tsx` and `client/src/lib/exteriorCarePlan.ts` — homepage care-plan panel and safe query-string handoff model.
 - `client/src/pages/OurWork.tsx` — service-library replacement for the broken gallery experience.
 - `client/src/pages/GetEstimate.tsx` and `client/src/pages/Contact.tsx` — transparent form-delivery guard.
 - `client/src/components/Layout.tsx` — accessible navigation and shared contact treatment.
 - `docs/plans/2026-09-26-next-level-experience.md` — complete audit, evidence ledger, creative direction, and implementation rationale.
+- `docs/plans/2026-09-26-exterior-care-plan-concept.md` — original concept rationale, user flow, evidence treatment, and acceptance criteria for the care-plan panel.
