@@ -5,31 +5,38 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import {
-  Phone, Menu, X, ChevronDown, MapPin, Mail, Facebook,
-  Shield, Star, Clock
+  Phone,
+  Menu,
+  X,
+  ChevronDown,
+  MapPin,
+  Mail,
+  Facebook,
+  Shield,
+  Star,
+  Clock,
 } from "lucide-react";
 import { LOGO_URL } from "@/config/images";
-
-// ⚠️ Phone is a Los Angeles (323) area code — local NC number (910/919) recommended for local SEO, but current number is functional and in production
-// Dual phone strategy: 919 local NC number displayed for local SEO trust, 323 (actual line) shown secondary
-// Ported 323 → Google Voice local 919 forwarding number for maximum local credibility
-const PHONE_LOCAL = "(919) 348-9808";
-const PHONE_LOCAL_HREF = "tel:9193489808";
-const PHONE = "(323) 485-1020";
-const PHONE_HREF = "tel:3234851020";
-const FB_URL = "https://www.facebook.com/people/Next-Level-Window-Cleaning/61579913446585/";
+import {
+  FACEBOOK_URL,
+  PHONE_DISPLAY,
+  PHONE_DISPLAY_SECONDARY,
+  PHONE_HREF,
+  PHONE_HREF_SECONDARY,
+} from "@/const";
 
 const navItems = [
   { label: "Home", href: "/" },
   {
-    label: "Residential", href: "/residential",
+    label: "Residential",
+    href: "/residential",
     children: [
       { label: "Window Cleaning", href: "/residential/window-cleaning" },
       { label: "Pressure Washing", href: "/residential/pressure-washing" },
       { label: "Soft Washing", href: "/residential/soft-washing" },
       { label: "Christmas Lights", href: "/residential/christmas-lights" },
-            { label: "Gutter Cleaning", href: "/residential/gutter-cleaning" },
-    ]
+      { label: "Gutter Cleaning", href: "/residential/gutter-cleaning" },
+    ],
   },
   { label: "Commercial", href: "/commercial" },
   { label: "Our Work", href: "/our-work" },
@@ -38,13 +45,26 @@ const navItems = [
   { label: "Contact", href: "/contact" },
 ];
 
-function DropdownMenu({ items }: { items: { label: string; href: string }[] }) {
+function DropdownMenu({
+  id,
+  items,
+}: {
+  id: string;
+  items: { label: string; href: string }[];
+}) {
   return (
-    <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
-      {items.map((item) => (
+    <div
+      id={id}
+      role="menu"
+      className="absolute top-full left-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50"
+    >
+      {items.map(item => (
         <Link key={item.href} href={item.href}>
-          <span className="block px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-sky-50 hover:text-[var(--brand-aqua)] transition-colors cursor-pointer"
-            style={{ fontFamily: 'Manrope, sans-serif' }}>
+          <span
+            role="menuitem"
+            className="block px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-sky-50 hover:text-[var(--brand-aqua)] transition-colors cursor-pointer"
+            style={{ fontFamily: "Manrope, sans-serif" }}
+          >
             {item.label}
           </span>
         </Link>
@@ -73,35 +93,73 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Top announcement bar */}
-      <div className="hidden sm:flex items-center justify-between px-6 py-2 text-xs font-semibold text-white"
-        style={{ backgroundColor: 'var(--brand-aqua-dark)', fontFamily: 'Manrope, sans-serif' }}>
+      <div
+        className="hidden sm:flex items-center justify-between px-6 py-2 text-xs font-semibold text-white"
+        style={{
+          backgroundColor: "var(--brand-aqua-dark)",
+          fontFamily: "Manrope, sans-serif",
+        }}
+      >
         <span className="flex items-center gap-1.5">
-          <MapPin size={12} /> Serving Sanford, Cameron, Spring Lake &amp; Broadway, NC
+          <MapPin size={12} /> Serving Sanford, Cameron, Spring Lake &amp;
+          Broadway, NC
         </span>
-        <a href={PHONE_LOCAL_HREF} className="flex items-center gap-1.5 hover:text-white/80 transition-colors">
-          <Phone size={12} /> {PHONE_LOCAL} — Free Estimates, Same-Day Response
+        <a
+          href={PHONE_HREF}
+          className="flex items-center gap-1.5 hover:text-white/80 transition-colors"
+        >
+          <Phone size={12} /> {PHONE_DISPLAY} — Free Estimates, Call or Text
         </a>
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 z-40 bg-white transition-shadow duration-200 ${scrolled ? 'shadow-md' : 'border-b border-gray-100'}`}>
+      <header
+        className={`sticky top-0 z-40 bg-white transition-shadow duration-200 ${scrolled ? "shadow-md" : "border-b border-gray-100"}`}
+      >
         <div className="container flex items-center justify-between h-16 lg:h-18">
           {/* Logo */}
           <Link href="/">
             <span className="flex items-center gap-2 cursor-pointer">
-              <img src={LOGO_URL} alt="Next Level Window Cleaning" className="h-10 w-auto object-contain" />
+              <img
+                src={LOGO_URL}
+                alt="Next Level Window Cleaning"
+                className="h-10 w-auto object-contain"
+              />
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-6">
-            {navItems.map((item) => (
-              <div key={item.href} className="relative"
-                onMouseEnter={() => item.children && setOpenDropdown(item.label)}
-                onMouseLeave={() => setOpenDropdown(null)}>
+            {navItems.map(item => (
+              <div
+                key={item.href}
+                className="relative"
+                onMouseEnter={() =>
+                  item.children && setOpenDropdown(item.label)
+                }
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
                 {item.children ? (
-                  <button className="nav-link flex items-center gap-1"
-                    style={{ background: 'none', border: 'none', padding: '0.25rem 0' }}>
+                  <button
+                    className="nav-link flex items-center gap-1"
+                    type="button"
+                    aria-haspopup="menu"
+                    aria-expanded={openDropdown === item.label}
+                    aria-controls={`${item.label.toLowerCase()}-menu`}
+                    onClick={() =>
+                      setOpenDropdown(current =>
+                        current === item.label ? null : item.label
+                      )
+                    }
+                    onKeyDown={event => {
+                      if (event.key === "Escape") setOpenDropdown(null);
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: "0.25rem 0",
+                    }}
+                  >
                     {item.label} <ChevronDown size={14} />
                   </button>
                 ) : (
@@ -110,7 +168,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 )}
                 {item.children && openDropdown === item.label && (
-                  <DropdownMenu items={item.children} />
+                  <DropdownMenu
+                    id={`${item.label.toLowerCase()}-menu`}
+                    items={item.children}
+                  />
                 )}
               </div>
             ))}
@@ -119,20 +180,33 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Desktop CTAs */}
           <div className="hidden lg:flex items-center gap-3">
             <div className="flex flex-col items-end">
-              <a href={PHONE_LOCAL_HREF} className="flex items-center gap-1.5 font-bold text-sm"
-                style={{ color: 'var(--brand-coral)', fontFamily: 'Manrope, sans-serif' }}>
-                <Phone size={15} /> {PHONE_LOCAL}
+              <a
+                href={PHONE_HREF}
+                className="flex items-center gap-1.5 font-bold text-sm"
+                style={{
+                  color: "var(--brand-coral)",
+                  fontFamily: "Manrope, sans-serif",
+                }}
+              >
+                <Phone size={15} /> {PHONE_DISPLAY}
               </a>
-              <span className="text-[10px] text-gray-400 leading-tight">Calls forwarded to our team</span>
+              <span className="text-[10px] text-gray-400 leading-tight">
+                Call or text for an estimate
+              </span>
             </div>
             <Link href="/get-a-free-estimate">
-              <span className="btn-primary text-sm py-2.5 px-5">Get a Free Estimate</span>
+              <span className="btn-primary text-sm py-2.5 px-5">
+                Get a Free Estimate
+              </span>
             </Link>
           </div>
 
           {/* Mobile menu toggle */}
-          <button className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900"
-            onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
+          <button
+            className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -141,20 +215,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {mobileOpen && (
           <div className="lg:hidden border-t border-gray-100 bg-white">
             <div className="container py-4 flex flex-col gap-1">
-              {navItems.map((item) => (
+              {navItems.map(item => (
                 <div key={item.href}>
                   <Link href={item.href}>
-                    <span className="block py-2.5 font-semibold text-gray-800 hover:text-[var(--brand-aqua)] transition-colors"
-                      style={{ fontFamily: 'Manrope, sans-serif' }}>
+                    <span
+                      className="block py-2.5 font-semibold text-gray-800 hover:text-[var(--brand-aqua)] transition-colors"
+                      style={{ fontFamily: "Manrope, sans-serif" }}
+                    >
                       {item.label}
                     </span>
                   </Link>
                   {item.children && (
                     <div className="pl-4 flex flex-col gap-0.5 mb-1">
-                      {item.children.map((child) => (
+                      {item.children.map(child => (
                         <Link key={child.href} href={child.href}>
-                          <span className="block py-2 text-sm text-gray-600 hover:text-[var(--brand-aqua)] transition-colors"
-                            style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 500 }}>
+                          <span
+                            className="block py-2 text-sm text-gray-600 hover:text-[var(--brand-aqua)] transition-colors"
+                            style={{
+                              fontFamily: "Manrope, sans-serif",
+                              fontWeight: 500,
+                            }}
+                          >
                             {child.label}
                           </span>
                         </Link>
@@ -164,11 +245,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </div>
               ))}
               <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
-                <a href={PHONE_LOCAL_HREF} className="btn-coral text-center justify-center">
-                  <Phone size={16} /> Call / Text: {PHONE_LOCAL}
+                <a
+                  href={PHONE_HREF}
+                  className="btn-coral text-center justify-center"
+                >
+                  <Phone size={16} /> Call / Text: {PHONE_DISPLAY}
                 </a>
                 <Link href="/get-a-free-estimate">
-                  <span className="btn-primary w-full text-center justify-center">Get a Free Estimate</span>
+                  <span className="btn-primary w-full text-center justify-center">
+                    Get a Free Estimate
+                  </span>
                 </Link>
               </div>
             </div>
@@ -185,13 +271,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-1">
-              <img src={LOGO_URL} alt="Next Level Window Cleaning" className="h-12 w-auto object-contain mb-4 brightness-0 invert" />
+              <img
+                src={LOGO_URL}
+                alt="Next Level Window Cleaning"
+                className="h-12 w-auto object-contain mb-4 brightness-0 invert"
+              />
               <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                Locally owned and fully insured exterior cleaning serving Sanford, NC and surrounding areas.
+                Locally owned and fully insured exterior cleaning serving
+                Sanford, NC and surrounding areas.
               </p>
               <div className="flex items-center gap-3">
-                <a href={FB_URL} target="_blank" rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--brand-aqua)] transition-colors">
+                <a
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Visit Next Level Window Cleaning on Facebook"
+                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--brand-aqua)] transition-colors"
+                >
                   <Facebook size={16} />
                 </a>
               </div>
@@ -199,8 +295,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* Services */}
             <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider text-gray-300 mb-4"
-                style={{ fontFamily: 'Manrope, sans-serif', letterSpacing: '0.08em' }}>Services</h4>
+              <h4
+                className="font-bold text-sm uppercase tracking-wider text-gray-300 mb-4"
+                style={{
+                  fontFamily: "Manrope, sans-serif",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Services
+              </h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 {[
                   ["Window Cleaning", "/residential/window-cleaning"],
@@ -212,7 +315,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 ].map(([label, href]) => (
                   <li key={href}>
                     <Link href={href}>
-                      <span className="hover:text-white transition-colors cursor-pointer">{label}</span>
+                      <span className="hover:text-white transition-colors cursor-pointer">
+                        {label}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -221,8 +326,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* Quick Links */}
             <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider text-gray-300 mb-4"
-                style={{ fontFamily: 'Manrope, sans-serif', letterSpacing: '0.08em' }}>Quick Links</h4>
+              <h4
+                className="font-bold text-sm uppercase tracking-wider text-gray-300 mb-4"
+                style={{
+                  fontFamily: "Manrope, sans-serif",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Quick Links
+              </h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 {[
                   ["About Us", "/about"],
@@ -234,7 +346,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 ].map(([label, href]) => (
                   <li key={href}>
                     <Link href={href}>
-                      <span className="hover:text-white transition-colors cursor-pointer">{label}</span>
+                      <span className="hover:text-white transition-colors cursor-pointer">
+                        {label}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -243,28 +357,67 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* Contact / NAP */}
             <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider text-gray-300 mb-4"
-                style={{ fontFamily: 'Manrope, sans-serif', letterSpacing: '0.08em' }}>Contact</h4>
+              <h4
+                className="font-bold text-sm uppercase tracking-wider text-gray-300 mb-4"
+                style={{
+                  fontFamily: "Manrope, sans-serif",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Contact
+              </h4>
               <ul className="space-y-3 text-sm text-gray-400">
                 <li className="flex items-start gap-2.5">
-                  <MapPin size={15} className="mt-0.5 flex-shrink-0 text-[var(--brand-aqua)]" />
-                  <span>Sanford, NC 27330<br />Serving Lee County &amp; surrounding areas</span>
+                  <MapPin
+                    size={15}
+                    className="mt-0.5 flex-shrink-0 text-[var(--brand-aqua)]"
+                  />
+                  <span>
+                    Sanford, NC 27330
+                    <br />
+                    Serving Lee County &amp; surrounding areas
+                  </span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Phone size={15} className="flex-shrink-0 text-[var(--brand-aqua)]" />
+                  <Phone
+                    size={15}
+                    className="flex-shrink-0 text-[var(--brand-aqua)]"
+                  />
                   <div>
-                    <a href={PHONE_LOCAL_HREF} className="hover:text-white transition-colors block">{PHONE_LOCAL}</a>
-                    <span className="text-[11px] text-gray-500">or <a href={PHONE_HREF} className="hover:text-white transition-colors">{PHONE}</a></span>
+                    <a
+                      href={PHONE_HREF}
+                      className="hover:text-white transition-colors block"
+                    >
+                      {PHONE_DISPLAY}
+                    </a>
+                    <span className="text-[11px] text-gray-500">
+                      or{" "}
+                      <a
+                        href={PHONE_HREF_SECONDARY}
+                        className="hover:text-white transition-colors"
+                      >
+                        {PHONE_DISPLAY_SECONDARY}
+                      </a>
+                    </span>
                   </div>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Mail size={15} className="flex-shrink-0 text-[var(--brand-aqua)]" />
-                  <a href="mailto:info@nextlevelwindowsnc.com" className="hover:text-white transition-colors">
+                  <Mail
+                    size={15}
+                    className="flex-shrink-0 text-[var(--brand-aqua)]"
+                  />
+                  <a
+                    href="mailto:info@nextlevelwindowsnc.com"
+                    className="hover:text-white transition-colors"
+                  >
                     info@nextlevelwindowsnc.com
                   </a>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Clock size={15} className="flex-shrink-0 text-[var(--brand-aqua)]" />
+                  <Clock
+                    size={15}
+                    className="flex-shrink-0 text-[var(--brand-aqua)]"
+                  />
                   <span>Mon–Sat: 7am – 6pm</span>
                 </li>
               </ul>
@@ -281,10 +434,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Bottom bar */}
           <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-            <p>© {new Date().getFullYear()} Next Level Window Cleaning. All rights reserved. Sanford, NC.</p>
+            <p>
+              © {new Date().getFullYear()} Next Level Window Cleaning. All
+              rights reserved. Sanford, NC.
+            </p>
             <div className="flex gap-4">
-              <Link href="/privacy"><span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span></Link>
-              <Link href="/terms"><span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span></Link>
+              <Link href="/privacy">
+                <span className="hover:text-white transition-colors cursor-pointer">
+                  Privacy Policy
+                </span>
+              </Link>
+              <Link href="/terms">
+                <span className="hover:text-white transition-colors cursor-pointer">
+                  Terms of Service
+                </span>
+              </Link>
             </div>
             <p>Serving Sanford · Cameron · Spring Lake · Broadway, NC</p>
           </div>
@@ -292,16 +456,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </footer>
 
       {/* Mobile sticky bottom CTA bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex border-t border-white/20"
-        style={{ backgroundColor: 'var(--brand-charcoal)' }}>
-        <a href={PHONE_LOCAL_HREF}
+      <div
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex border-t border-white/20"
+        style={{ backgroundColor: "var(--brand-charcoal)" }}
+      >
+        <a
+          href={PHONE_HREF}
           className="flex-1 flex items-center justify-center gap-2 py-3.5 text-white font-bold text-sm border-r border-white/20"
-          style={{ fontFamily: 'Manrope, sans-serif' }}>
-          <Phone size={16} /> Call (919) 348-9808
+          style={{ fontFamily: "Manrope, sans-serif" }}
+        >
+          <Phone size={16} /> Call {PHONE_DISPLAY}
         </a>
         <Link href="/get-a-free-estimate">
-          <span className="flex-1 flex items-center justify-center gap-2 py-3.5 text-white font-bold text-sm"
-            style={{ backgroundColor: 'var(--brand-coral)', fontFamily: 'Manrope, sans-serif' }}>
+          <span
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 text-white font-bold text-sm"
+            style={{
+              backgroundColor: "var(--brand-coral)",
+              fontFamily: "Manrope, sans-serif",
+            }}
+          >
             Get Estimate
           </span>
         </Link>

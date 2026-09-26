@@ -1,260 +1,200 @@
 // OurWork.tsx — Next Level Window Cleaning
-// Design: Local Pride Modernism — real job photos, masonry grid, before/after slider, aqua service badges
+// Purpose: a service library until approved, working project imagery is available.
 import useSEO from "@/hooks/useSEO";
 import { Link } from "wouter";
 import Layout from "@/components/Layout";
 import CTASection from "@/components/CTASection";
 import { BreadcrumbSchema } from "@/components/SchemaMarkup";
-import BeforeAfter from "@/components/BeforeAfter";
-import { ArrowRight, Facebook } from "lucide-react";
-import { GALLERY, BEFORE_AFTER } from "@/config/images";
+import {
+  ArrowRight,
+  Building2,
+  Droplets,
+  Facebook,
+  Gauge,
+  Lightbulb,
+  Sparkles,
+  Wind,
+} from "lucide-react";
+import { HERO_GENERATED } from "@/config/images";
+import { FACEBOOK_URL } from "@/const";
 
-const galleryItems = [
+const serviceCards = [
   {
-    img: GALLERY.gallery_09,
-    label: "Soft Wash — House & Deck Rails",
-    location: "Sanford, NC",
-    service: "Soft Washing",
-    featured: true,
+    icon: Sparkles,
+    title: "Window Cleaning",
+    copy: "Interior and exterior window cleaning for homes, storefronts, and workplaces.",
+    href: "/residential/window-cleaning",
   },
   {
-    img: GALLERY.gallery_10,
-    label: "Deck Rail Cleaning",
-    location: "Sanford, NC",
-    service: "Soft Washing",
-    featured: false,
+    icon: Gauge,
+    title: "Pressure Washing",
+    copy: "A stronger clean for durable outdoor surfaces such as driveways and sidewalks.",
+    href: "/residential/pressure-washing",
   },
   {
-    img: GALLERY.gallery_01,
-    label: "Residential Window Cleaning",
-    location: "Sanford, NC",
-    service: "Window Cleaning",
-    featured: false,
+    icon: Wind,
+    title: "Soft Washing",
+    copy: "A lower-pressure approach for roofs, siding, and other more delicate exteriors.",
+    href: "/residential/soft-washing",
   },
   {
-    img: GALLERY.gallery_02,
-    label: "Exterior House Washing",
-    location: "Sanford, NC",
-    service: "Soft Washing",
-    featured: false,
+    icon: Droplets,
+    title: "Gutter Cleaning",
+    copy: "Gutter and downspout cleaning to help water move through the system.",
+    href: "/residential/gutter-cleaning",
   },
   {
-    img: GALLERY.gallery_03,
-    label: "Window & Siding Cleaning",
-    location: "Lee County, NC",
-    service: "Window Cleaning",
-    featured: false,
+    icon: Lightbulb,
+    title: "Christmas Lights",
+    copy: "Holiday light installation and takedown for a cleaner seasonal setup.",
+    href: "/residential/christmas-lights",
   },
   {
-    img: GALLERY.gallery_04,
-    label: "Residential Exterior Wash",
-    location: "Sanford, NC",
-    service: "Soft Washing",
-    featured: false,
-  },
-  {
-    img: GALLERY.gallery_05,
-    label: "House Soft Washing",
-    location: "Cameron, NC",
-    service: "Soft Washing",
-    featured: false,
-  },
-  {
-    img: GALLERY.gallery_06,
-    label: "Siding & Window Cleaning",
-    location: "Sanford, NC",
-    service: "Window Cleaning",
-    featured: false,
-  },
-  {
-    img: GALLERY.gallery_07,
-    label: "Full Exterior Cleaning",
-    location: "Lee County, NC",
-    service: "Soft Washing",
-    featured: false,
-  },
-  {
-    img: GALLERY.gallery_08,
-    label: "Residential Window Cleaning",
-    location: "Spring Lake, NC",
-    service: "Window Cleaning",
-    featured: false,
-  },
-  {
-    img: GALLERY.gallery_11,
-    label: "Pressure Washing — Driveway",
-    location: "Sanford, NC",
-    service: "Pressure Washing",
-    featured: false,
-  },
-  {
-    img: GALLERY.gallery_12,
-    label: "Exterior Cleaning Results",
-    location: "Sanford, NC",
-    service: "Soft Washing",
-    featured: false,
+    icon: Building2,
+    title: "Commercial Care",
+    copy: "Exterior care for offices, storefronts, restaurants, and managed properties.",
+    href: "/commercial",
   },
 ];
 
-const serviceColors: Record<string, string> = {
-  "Window Cleaning": "#0ea5e9",
-  "Soft Washing": "#06b6d4",
-  "Pressure Washing": "#f97316",
-  "Commercial": "#6366f1",
-};
-
 export default function OurWork() {
   useSEO(
-    "Our Work | Window Cleaning & Pressure Washing Results | Sanford, NC",
-    "See before-and-after results from Next Level Window Cleaning. Real jobs, real results for homes and businesses in Sanford, NC.",
+    "Our Services | Next Level Window Cleaning | Sanford, NC",
+    "Explore Next Level Window Cleaning services for Sanford-area homes and businesses, including window cleaning, pressure washing, soft washing, and gutters.",
     "/our-work"
   );
+
   return (
     <Layout>
-      <BreadcrumbSchema items={[{"name":"Home","url":"/"},{"name":"Our Work","url":"/our-work"}]} />
-      {/* Hero */}
-      <section className="py-12 bg-sky-tint border-b border-gray-200">
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Our Work", url: "/our-work" },
+        ]}
+      />
+      <section className="border-b border-gray-200 bg-sky-tint py-12">
         <div className="container max-w-3xl text-center">
-          <nav className="text-gray-400 text-xs mb-4 flex items-center justify-center gap-1.5" style={{ fontFamily: 'Manrope, sans-serif' }}>
-            <Link href="/"><span className="hover:text-gray-600 cursor-pointer">Home</span></Link><span>/</span>
-            <span className="text-gray-600">Our Work</span>
-          </nav>
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-3" style={{ fontFamily: 'Manrope, sans-serif' }}>
-            Our Work
-          </h1>
-          <p className="text-gray-600 mb-4 max-w-xl mx-auto">
-            Real jobs, real results. Every photo below is an actual job completed by Adam and the Next Level team in Sanford, NC and surrounding areas.
-          </p>
-          <a
-            href="https://www.facebook.com/people/Next-Level-Window-Cleaning/61579913446585/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary inline-flex"
+          <nav
+            className="mb-4 flex items-center justify-center gap-1.5 text-xs text-gray-400"
+            aria-label="Breadcrumb"
+            style={{ fontFamily: "Manrope, sans-serif" }}
           >
-            <Facebook size={16} /> See More on Facebook <ArrowRight size={15} />
-          </a>
+            <Link href="/">
+              <span className="cursor-pointer hover:text-gray-600">Home</span>
+            </Link>
+            <span>/</span>
+            <span className="text-gray-600">Services</span>
+          </nav>
+          <p className="eyebrow">Service library</p>
+          <h1
+            className="mt-3 text-3xl font-extrabold text-gray-900 lg:text-4xl"
+            style={{ fontFamily: "Manrope, sans-serif" }}
+          >
+            Care for the surfaces around your property.
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-gray-600">
+            Review the service routes below, then request an estimate for your
+            Sanford-area home or business.
+          </p>
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section className="py-6 bg-white border-b border-gray-100">
+      <section className="bg-white py-14">
         <div className="container">
-          <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto text-center">
-            {[
-              { num: "100+", label: "Jobs Completed" },
-              { num: "5★", label: "Average Rating" },
-              { num: "3", label: "Service Types" },
-            ].map(({ num, label }) => (
-              <div key={label}>
-                <p className="text-2xl font-extrabold" style={{ color: 'var(--brand-aqua)', fontFamily: 'Manrope, sans-serif' }}>{num}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── BEFORE / AFTER SHOWCASE ── */}
-      <section className="py-14 bg-sky-tint">
-        <div className="container">
-          <div className="mb-8">
-            <h2 className="section-heading text-2xl lg:text-3xl text-gray-900 mb-2">
-              Before &amp; After
-            </h2>
-            <p className="text-gray-500 text-sm ml-5">
-              Drag the slider to reveal the transformation — a real job in Sanford, NC.
-            </p>
-          </div>
-          <div className="max-w-lg mx-auto">
-            <BeforeAfter
-              beforeSrc={BEFORE_AFTER.before}
-              afterSrc={BEFORE_AFTER.after}
-              beforeLabel="Before"
-              afterLabel="After"
-              alt="Window cleaning before and after Sanford NC"
-              aspectRatio="3/4"
+          <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <img
+              src={HERO_GENERATED}
+              alt="Exterior cleaning in progress at a residential property"
+              className="w-full rounded-2xl object-cover shadow-lg"
+              style={{ aspectRatio: "4/3" }}
             />
-            <p className="text-center text-xs text-gray-400 mt-2" style={{ fontFamily: 'Manrope, sans-serif' }}>
-              Christmas light installation — Sanford, NC
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery grid */}
-      <section className="py-12 bg-white">
-        <div className="container">
-          {/* Featured large photo */}
-          <div className="mb-5">
-            <div className="relative rounded-2xl overflow-hidden group" style={{ maxHeight: '520px' }}>
-              <img
-                src={galleryItems[0].img}
-                alt={galleryItems[0].label}
-                className="w-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                style={{ maxHeight: '520px' }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute bottom-5 left-5">
-                <span
-                  className="text-xs font-bold text-white px-3 py-1.5 rounded-full mb-2 inline-block"
-                  style={{ backgroundColor: serviceColors[galleryItems[0].service] || 'var(--brand-aqua)' }}
-                >
-                  {galleryItems[0].service}
+            <div>
+              <p className="eyebrow">Start with the surface</p>
+              <h2
+                className="mt-3 text-3xl font-extrabold tracking-[-0.03em] text-gray-900"
+                style={{ fontFamily: "Manrope, sans-serif" }}
+              >
+                A driveway, roof, and window need different care.
+              </h2>
+              <p className="mt-4 leading-relaxed text-gray-600">
+                The service pages explain the approach used for each type of
+                exterior. If you are not sure where to begin, an estimate
+                request is a good place to describe what you see.
+              </p>
+              <Link href="/get-a-free-estimate">
+                <span className="btn-primary mt-7">
+                  Request a Free Estimate <ArrowRight size={16} />
                 </span>
-                <p className="text-white font-extrabold text-lg" style={{ fontFamily: 'Manrope, sans-serif' }}>{galleryItems[0].label}</p>
-                <p className="text-white/70 text-sm">{galleryItems[0].location}</p>
-              </div>
+              </Link>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Remaining photos in 3-col grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {galleryItems.slice(1).map(({ img, label, location, service }, i) => (
-              <div key={i} className="service-card overflow-hidden group">
-                <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
-                  <img
-                    src={img}
-                    alt={label}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span
-                      className="text-xs font-bold text-white px-2.5 py-1 rounded-full"
-                      style={{ backgroundColor: serviceColors[service] || 'var(--brand-aqua)', fontFamily: 'Manrope, sans-serif' }}
-                    >
-                      {service}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <p className="font-bold text-gray-900 text-sm" style={{ fontFamily: 'Manrope, sans-serif' }}>{label}</p>
-                  <p className="text-gray-400 text-xs mt-0.5">{location}</p>
-                </div>
-              </div>
+      <section className="clearline-surface py-14 md:py-20">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow">Find the right route</p>
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-[-0.03em] text-gray-900 md:text-4xl"
+              style={{ fontFamily: "Manrope, sans-serif" }}
+            >
+              Six ways to take care of an exterior.
+            </h2>
+          </div>
+          <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {serviceCards.map(({ icon: Icon, title, copy, href }) => (
+              <Link key={href} href={href}>
+                <article className="service-field-card group h-full">
+                  <span className="service-field-icon">
+                    <Icon size={21} />
+                  </span>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                  <span className="service-field-link">
+                    Explore service <ArrowRight size={15} />
+                  </span>
+                </article>
+              </Link>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* More photos CTA */}
-          <div className="mt-10 text-center p-8 bg-sky-tint rounded-2xl">
-            <h3 className="font-extrabold text-gray-900 text-xl mb-2" style={{ fontFamily: 'Manrope, sans-serif' }}>
-              See More of Our Work
-            </h3>
-            <p className="text-gray-600 text-sm mb-5">
-              We post before-and-after photos and job updates regularly on Facebook.
+      <section className="bg-white py-14">
+        <div className="container text-center">
+          <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 bg-sky-tint p-8">
+            <Facebook
+              size={26}
+              className="mx-auto"
+              style={{ color: "var(--brand-aqua)" }}
+            />
+            <h2
+              className="mt-4 text-xl font-extrabold text-gray-900"
+              style={{ fontFamily: "Manrope, sans-serif" }}
+            >
+              Follow the local work
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-gray-600">
+              Visit Next Level Window Cleaning on Facebook for updates from the
+              team.
             </p>
             <a
-              href="https://www.facebook.com/people/Next-Level-Window-Cleaning/61579913446585/"
+              href={FACEBOOK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary inline-flex"
+              className="btn-primary mt-5"
             >
-              <Facebook size={16} /> Follow Us on Facebook
+              Visit Facebook <ArrowRight size={16} />
             </a>
           </div>
         </div>
       </section>
 
-      <CTASection title="Want Results Like These?" subtitle="Get a free estimate for your home or business in Sanford, NC." />
+      <CTASection
+        title="Ready to talk through your property?"
+        subtitle="Get a free estimate for a Sanford-area home or business, or call or text to confirm the right service."
+      />
     </Layout>
   );
 }
