@@ -1,6 +1,5 @@
-// BeforeAfter.tsx — Interactive drag-to-reveal before/after slider
-// Design: Local Pride Modernism — clean, tactile, works on touch and mouse
-import { useState, useRef, useCallback, useEffect } from "react";
+// BeforeAfter.tsx — accessible before/after comparison
+import { useId, useRef, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 
 interface BeforeAfterProps {
@@ -21,121 +20,94 @@ export default function BeforeAfter({
   alt = "Before and after comparison",
   aspectRatio = "4/3",
 }: BeforeAfterProps) {
-  const [position, setPosition] = useState(50); // percentage 0–100
-  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const updatePosition = useCallback((clientX: number) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    setPosition((x / rect.width) * 100);
-  }, []);
-
-  // Mouse events
-  const onMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setDragging(true);
-    updatePosition(e.clientX);
-  };
-
-  // Touch events
-  const onTouchStart = (e: React.TouchEvent) => {
-    setDragging(true);
-    updatePosition(e.touches[0].clientX);
-  };
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent | TouchEvent) => {
-      if (!dragging) return;
-      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-      updatePosition(clientX);
-    };
-    const onUp = () => setDragging(false);
-
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("touchend", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onUp);
-    };
-  }, [dragging, updatePosition]);
+  const instructionsId = useId();
 
   return (
     <div
       ref={containerRef}
       className="relative overflow-hidden rounded-2xl select-none shadow-lg"
-      style={{ aspectRatio, cursor: dragging ? "grabbing" : "grab" }}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
+      style={{ aspectRatio }}
+      role="group"
+      aria-label={alt}
     >
-      {/* AFTER image (full width, underneath) */}
       <img
         src={afterSrc}
-        alt={`${alt} — after`}
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        alt={`${alt} — ${afterLabel.toLowerCase()}`}
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         draggable={false}
       />
-
-      {/* BEFORE image (clipped to left of slider) */}
       <div
-        className="absolute inset-0 overflow-hidden pointer-events-none"
+        className="pointer-events-none absolute inset-y-0 left-0 overflow-hidden"
         style={{ width: `${position}%` }}
       >
         <img
           src={beforeSrc}
-          alt={`${alt} — before`}
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : "100%" }}
+          alt={`${alt} — ${beforeLabel.toLowerCase()}`}
+          className="absolute inset-0 h-full max-w-none object-cover"
+          style={{
+            width: containerRef.current
+              ? `${containerRef.current.offsetWidth}px`
+              : "100%",
+          }}
           draggable={false}
         />
       </div>
-
-      {/* Divider line */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-md pointer-events-none"
+        className="pointer-events-none absolute bottom-0 top-0 z-10 w-0.5 bg-white shadow-md"
         style={{ left: `${position}%`, transform: "translateX(-50%)" }}
       />
-
-      {/* Drag handle */}
       <div
-        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white shadow-xl flex items-center justify-center pointer-events-none z-10"
+        className="pointer-events-none absolute top-1/2 z-10 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-xl"
         style={{ left: `${position}%` }}
       >
-        <ArrowLeftRight size={18} style={{ color: "var(--brand-aqua)" }} strokeWidth={2.5} />
+        <ArrowLeftRight
+          size={18}
+          style={{ color: "var(--brand-aqua)" }}
+          strokeWidth={2.5}
+        />
       </div>
-
-      {/* Labels */}
-      <div className="absolute top-3 left-3 pointer-events-none">
+      <div className="pointer-events-none absolute left-3 top-3 z-10">
         <span
-          className="text-xs font-bold text-white px-2.5 py-1 rounded-full"
-          style={{ backgroundColor: "rgba(0,0,0,0.55)", fontFamily: "Manrope, sans-serif" }}
+          className="rounded-full bg-black/55 px-2.5 py-1 text-xs font-bold text-white"
+          style={{ fontFamily: "Manrope, sans-serif" }}
         >
           {beforeLabel}
         </span>
       </div>
-      <div className="absolute top-3 right-3 pointer-events-none">
+      <div className="pointer-events-none absolute right-3 top-3 z-10">
         <span
-          className="text-xs font-bold text-white px-2.5 py-1 rounded-full"
-          style={{ backgroundColor: "var(--brand-aqua)", fontFamily: "Manrope, sans-serif" }}
+          className="rounded-full px-2.5 py-1 text-xs font-bold text-white"
+          style={{
+            backgroundColor: "var(--brand-aqua)",
+            fontFamily: "Manrope, sans-serif",
+          }}
         >
           {afterLabel}
         </span>
       </div>
-
-      {/* Hint text (fades after first interaction) */}
+      <p id={instructionsId} className="sr-only">
+        Use the left and right arrow keys to compare the before and after
+        images.
+      </p>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={position}
+        onChange={event => setPosition(Number(event.target.value))}
+        aria-label={`${beforeLabel} and ${afterLabel} comparison position`}
+        aria-describedby={instructionsId}
+        className="absolute inset-0 z-20 h-full w-full cursor-col-resize opacity-0"
+      />
       {position === 50 && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-none">
+        <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2">
           <span
-            className="text-xs font-semibold text-white px-3 py-1 rounded-full"
-            style={{ backgroundColor: "rgba(0,0,0,0.45)", fontFamily: "Manrope, sans-serif" }}
+            className="rounded-full bg-black/45 px-3 py-1 text-xs font-semibold text-white"
+            style={{ fontFamily: "Manrope, sans-serif" }}
           >
-            ← Drag to compare →
+            Drag or use arrow keys to compare
           </span>
         </div>
       )}

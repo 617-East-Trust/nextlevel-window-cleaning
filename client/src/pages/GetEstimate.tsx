@@ -1,57 +1,120 @@
 // GetEstimate.tsx — Next Level Window Cleaning
-// Email delivery via Web3Forms (https://web3forms.com) — free, no backend required
-// TO ACTIVATE: Replace YOUR_WEB3FORMS_ACCESS_KEY or set VITE_WEB3FORMS_KEY in environment
+// Email delivery through Web3Forms when VITE_WEB3FORMS_KEY is configured.
 import useSEO from "@/hooks/useSEO";
 import { useState } from "react";
 import { Link } from "wouter";
 import Layout from "@/components/Layout";
-import { Phone, CheckCircle, Home as HomeIcon, Building2, Loader2 } from "lucide-react";
+import {
+  Phone,
+  CheckCircle,
+  Home as HomeIcon,
+  Building2,
+  Loader2,
+} from "lucide-react";
 import { BreadcrumbSchema } from "@/components/SchemaMarkup";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/const";
 
-// ─── WEB3FORMS CONFIG ────────────────────────────────────────────────────────
-// 1. Go to https://web3forms.com/access
-// 2. Enter your email (info@nextlevelwindowsnc.com or your Gmail)
-// 3. Copy the Access Key and paste it below, OR set VITE_WEB3FORMS_KEY in environment
-const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY";
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Phone number with local NC area code
-const PHONE = "(919) 348-9808";
-const PHONE_HREF = "tel:9193489808";
+const WEB3FORMS_KEY =
+  import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY";
+const FORM_DELIVERY_CONFIGURED = WEB3FORMS_KEY !== "YOUR_WEB3FORMS_ACCESS_KEY";
 
 type FormType = "residential" | "commercial";
 
 function SuccessMessage() {
   return (
-    <div className="text-center py-12">
-      <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+    <div className="py-12 text-center">
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
         <CheckCircle size={32} className="text-green-500" />
       </div>
-      <h3 className="text-2xl font-extrabold text-gray-900 mb-2" style={{ fontFamily: 'Manrope, sans-serif' }}>We Got Your Request!</h3>
-      <p className="text-gray-600 mb-6">We'll review your details and get back to you — usually the same day. You can also reach us directly at <a href={PHONE_HREF} className="font-semibold" style={{ color: 'var(--brand-aqua)' }}>{PHONE}</a>.</p>
-      <Link href="/"><span className="btn-primary">Back to Home</span></Link>
+      <h3
+        className="mb-2 text-2xl font-extrabold text-gray-900"
+        style={{ fontFamily: "Manrope, sans-serif" }}
+      >
+        We got your request.
+      </h3>
+      <p className="mb-6 text-gray-600">
+        We&apos;ll review your details and follow up. You can also reach us
+        directly at{" "}
+        <a
+          href={PHONE_HREF}
+          className="font-semibold"
+          style={{ color: "var(--brand-aqua)" }}
+        >
+          {PHONE_DISPLAY}
+        </a>
+        .
+      </p>
+      <Link href="/">
+        <span className="btn-primary">Back to Home</span>
+      </Link>
+    </div>
+  );
+}
+
+function UnavailableFormNotice() {
+  return (
+    <div
+      className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center"
+      role="status"
+    >
+      <h3
+        className="text-xl font-extrabold text-gray-900"
+        style={{ fontFamily: "Manrope, sans-serif" }}
+      >
+        Online requests are being updated.
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-gray-600">
+        Please call or text to discuss your property and request an estimate.
+      </p>
+      <a href={PHONE_HREF} className="btn-coral mt-5">
+        <Phone size={16} /> Call or Text {PHONE_DISPLAY}
+      </a>
     </div>
   );
 }
 
 async function submitToWeb3Forms(payload: Record<string, string>) {
-  const res = await fetch("https://api.web3forms.com/submit", {
+  const response = await fetch("https://api.web3forms.com/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ access_key: WEB3FORMS_KEY, from_name: "Next Level Window Cleaning Website", ...payload }),
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      from_name: "Next Level Window Cleaning Website",
+      ...payload,
+    }),
   });
-  return res.json();
+  return response.json();
 }
 
 function ResidentialForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", city: "", service: "", timeframe: "", bestTime: "", notes: "" });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm({ ...form, [e.target.name]: e.target.value });
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    service: "",
+    timeframe: "",
+    bestTime: "",
+    notes: "",
+  });
+  const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => setForm({ ...form, [event.target.name]: event.target.value });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!FORM_DELIVERY_CONFIGURED) {
+      setError(
+        `Online requests are temporarily unavailable. Please call or text ${PHONE_DISPLAY}.`
+      );
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -69,29 +132,113 @@ function ResidentialForm() {
         botcheck: "",
       });
       if (data.success) setSubmitted(true);
-      else setError(`Something went wrong. Please call us at ${PHONE}.`);
+      else
+        setError(`Something went wrong. Please call or text ${PHONE_DISPLAY}.`);
     } catch {
-      setError(`Network error. Please call us at ${PHONE}.`);
+      setError(`Network error. Please call or text ${PHONE_DISPLAY}.`);
     } finally {
       setLoading(false);
     }
   };
 
+  if (!FORM_DELIVERY_CONFIGURED) return <UnavailableFormNotice />;
   if (submitted) return <SuccessMessage />;
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">Your Name *</label><input required name="name" value={form.name} onChange={handleChange} className="form-input" placeholder="Jane Smith" /></div>
-        <div><label className="form-label">Phone Number *</label><input required name="phone" value={form.phone} onChange={handleChange} className="form-input" placeholder="(919) 348-9808" /></div>
+      <input
+        type="checkbox"
+        name="botcheck"
+        className="hidden"
+        style={{ display: "none" }}
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="res-name">
+            Your Name *
+          </label>
+          <input
+            required
+            id="res-name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Jane Smith"
+          />
+        </div>
+        <div>
+          <label className="form-label" htmlFor="res-phone">
+            Phone Number *
+          </label>
+          <input
+            required
+            id="res-phone"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            className="form-input"
+            placeholder={PHONE_DISPLAY}
+          />
+        </div>
       </div>
-      <div><label className="form-label">Email Address</label><input type="email" name="email" value={form.email} onChange={handleChange} className="form-input" placeholder="jane@example.com" /></div>
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">Property Address *</label><input required name="address" value={form.address} onChange={handleChange} className="form-input" placeholder="123 Main St" /></div>
-        <div><label className="form-label">City *</label><input required name="city" value={form.city} onChange={handleChange} className="form-input" placeholder="Sanford" /></div>
+      <div>
+        <label className="form-label" htmlFor="res-email">
+          Email Address
+        </label>
+        <input
+          id="res-email"
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          className="form-input"
+          placeholder="jane@example.com"
+        />
       </div>
-      <div><label className="form-label">Service Needed *</label>
-        <select required name="service" value={form.service} onChange={handleChange} className="form-input">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="res-address">
+            Property Address *
+          </label>
+          <input
+            required
+            id="res-address"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="123 Main St"
+          />
+        </div>
+        <div>
+          <label className="form-label" htmlFor="res-city">
+            City *
+          </label>
+          <input
+            required
+            id="res-city"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Sanford"
+          />
+        </div>
+      </div>
+      <div>
+        <label className="form-label" htmlFor="res-service">
+          Service Needed *
+        </label>
+        <select
+          required
+          id="res-service"
+          name="service"
+          value={form.service}
+          onChange={handleChange}
+          className="form-input"
+        >
           <option value="">Select a service...</option>
           <option value="Window Cleaning">Window Cleaning</option>
           <option value="Pressure Washing">Pressure Washing</option>
@@ -101,9 +248,18 @@ function ResidentialForm() {
           <option value="Multiple Services">Multiple Services</option>
         </select>
       </div>
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">Preferred Timeframe</label>
-          <select name="timeframe" value={form.timeframe} onChange={handleChange} className="form-input">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="res-timeframe">
+            Preferred Timeframe
+          </label>
+          <select
+            id="res-timeframe"
+            name="timeframe"
+            value={form.timeframe}
+            onChange={handleChange}
+            className="form-input"
+          >
             <option value="">No preference</option>
             <option value="As soon as possible">As soon as possible</option>
             <option value="This week">This week</option>
@@ -111,8 +267,17 @@ function ResidentialForm() {
             <option value="This month">This month</option>
           </select>
         </div>
-        <div><label className="form-label">Best Time to Reach You</label>
-          <select name="bestTime" value={form.bestTime} onChange={handleChange} className="form-input">
+        <div>
+          <label className="form-label" htmlFor="res-best-time">
+            Best Time to Reach You
+          </label>
+          <select
+            id="res-best-time"
+            name="bestTime"
+            value={form.bestTime}
+            onChange={handleChange}
+            className="form-input"
+          >
             <option value="">Any time</option>
             <option value="Morning (7am–12pm)">Morning (7am–12pm)</option>
             <option value="Afternoon (12pm–5pm)">Afternoon (12pm–5pm)</option>
@@ -120,12 +285,41 @@ function ResidentialForm() {
           </select>
         </div>
       </div>
-      <div><label className="form-label">Additional Notes</label><textarea name="notes" value={form.notes} onChange={handleChange} className="form-input" rows={3} placeholder="Any details about your property or specific concerns..." /></div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <button type="submit" disabled={loading} className="btn-coral text-base py-3.5 justify-center disabled:opacity-60">
-        {loading ? <><Loader2 size={16} className="animate-spin" /> Submitting...</> : "Submit Estimate Request"}
+      <div>
+        <label className="form-label" htmlFor="res-notes">
+          Additional Notes
+        </label>
+        <textarea
+          id="res-notes"
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          className="form-input"
+          rows={3}
+          placeholder="Any details about your property or specific concerns..."
+        />
+      </div>
+      {error && (
+        <p className="text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={loading}
+        className="btn-coral justify-center py-3.5 text-base disabled:opacity-60"
+      >
+        {loading ? (
+          <>
+            <Loader2 size={16} className="animate-spin" /> Submitting...
+          </>
+        ) : (
+          "Send Estimate Request"
+        )}
       </button>
-      <p className="text-xs text-gray-400 text-center">We typically respond the same day. Your information is never shared.</p>
+      <p className="text-center text-xs text-gray-400">
+        Your information is used to respond to this request.
+      </p>
     </form>
   );
 }
@@ -134,11 +328,33 @@ function CommercialForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ businessName: "", contactName: "", phone: "", email: "", address: "", propertyType: "", service: "", frequency: "", scope: "", schedule: "", notes: "" });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm({ ...form, [e.target.name]: e.target.value });
+  const [form, setForm] = useState({
+    businessName: "",
+    contactName: "",
+    phone: "",
+    email: "",
+    address: "",
+    propertyType: "",
+    service: "",
+    frequency: "",
+    scope: "",
+    schedule: "",
+    notes: "",
+  });
+  const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => setForm({ ...form, [event.target.name]: event.target.value });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!FORM_DELIVERY_CONFIGURED) {
+      setError(
+        `Online requests are temporarily unavailable. Please call or text ${PHONE_DISPLAY}.`
+      );
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -159,30 +375,113 @@ function CommercialForm() {
         botcheck: "",
       });
       if (data.success) setSubmitted(true);
-      else setError(`Something went wrong. Please call us at ${PHONE}.`);
+      else
+        setError(`Something went wrong. Please call or text ${PHONE_DISPLAY}.`);
     } catch {
-      setError(`Network error. Please call us at ${PHONE}.`);
+      setError(`Network error. Please call or text ${PHONE_DISPLAY}.`);
     } finally {
       setLoading(false);
     }
   };
 
+  if (!FORM_DELIVERY_CONFIGURED) return <UnavailableFormNotice />;
   if (submitted) return <SuccessMessage />;
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">Business Name *</label><input required name="businessName" value={form.businessName} onChange={handleChange} className="form-input" placeholder="Acme Retail LLC" /></div>
-        <div><label className="form-label">Contact Name *</label><input required name="contactName" value={form.contactName} onChange={handleChange} className="form-input" placeholder="John Smith" /></div>
+      <input
+        type="checkbox"
+        name="botcheck"
+        className="hidden"
+        style={{ display: "none" }}
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="business-name">
+            Business Name *
+          </label>
+          <input
+            required
+            id="business-name"
+            name="businessName"
+            value={form.businessName}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Acme Retail LLC"
+          />
+        </div>
+        <div>
+          <label className="form-label" htmlFor="contact-name">
+            Contact Name *
+          </label>
+          <input
+            required
+            id="contact-name"
+            name="contactName"
+            value={form.contactName}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="John Smith"
+          />
+        </div>
       </div>
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">Phone *</label><input required name="phone" value={form.phone} onChange={handleChange} className="form-input" placeholder="(919) 348-9808" /></div>
-        <div><label className="form-label">Email</label><input type="email" name="email" value={form.email} onChange={handleChange} className="form-input" placeholder="john@business.com" /></div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="business-phone">
+            Phone *
+          </label>
+          <input
+            required
+            id="business-phone"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            className="form-input"
+            placeholder={PHONE_DISPLAY}
+          />
+        </div>
+        <div>
+          <label className="form-label" htmlFor="business-email">
+            Email
+          </label>
+          <input
+            id="business-email"
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="john@business.com"
+          />
+        </div>
       </div>
-      <div><label className="form-label">Property Address *</label><input required name="address" value={form.address} onChange={handleChange} className="form-input" placeholder="456 Commerce Blvd, Sanford, NC" /></div>
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">Type of Property</label>
-          <select name="propertyType" value={form.propertyType} onChange={handleChange} className="form-input">
+      <div>
+        <label className="form-label" htmlFor="business-address">
+          Property Address *
+        </label>
+        <input
+          required
+          id="business-address"
+          name="address"
+          value={form.address}
+          onChange={handleChange}
+          className="form-input"
+          placeholder="456 Commerce Blvd, Sanford, NC"
+        />
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="property-type">
+            Type of Property
+          </label>
+          <select
+            id="property-type"
+            name="propertyType"
+            value={form.propertyType}
+            onChange={handleChange}
+            className="form-input"
+          >
             <option value="">Select...</option>
             <option value="Retail Storefront">Retail Storefront</option>
             <option value="Office Building">Office Building</option>
@@ -192,8 +491,17 @@ function CommercialForm() {
             <option value="Other">Other</option>
           </select>
         </div>
-        <div><label className="form-label">Service Needed</label>
-          <select name="service" value={form.service} onChange={handleChange} className="form-input">
+        <div>
+          <label className="form-label" htmlFor="business-service">
+            Service Needed
+          </label>
+          <select
+            id="business-service"
+            name="service"
+            value={form.service}
+            onChange={handleChange}
+            className="form-input"
+          >
             <option value="">Select...</option>
             <option value="Window Cleaning">Window Cleaning</option>
             <option value="Pressure Washing">Pressure Washing</option>
@@ -202,9 +510,18 @@ function CommercialForm() {
           </select>
         </div>
       </div>
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div><label className="form-label">One-Time or Recurring?</label>
-          <select name="frequency" value={form.frequency} onChange={handleChange} className="form-input">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="form-label" htmlFor="frequency">
+            One-Time or Recurring?
+          </label>
+          <select
+            id="frequency"
+            name="frequency"
+            value={form.frequency}
+            onChange={handleChange}
+            className="form-input"
+          >
             <option value="">Select...</option>
             <option value="One-Time">One-Time</option>
             <option value="Weekly">Weekly</option>
@@ -212,15 +529,68 @@ function CommercialForm() {
             <option value="Monthly">Monthly</option>
           </select>
         </div>
-        <div><label className="form-label">Estimated Scope</label><input name="scope" value={form.scope} onChange={handleChange} className="form-input" placeholder="e.g., 3 storefronts, 2-story building" /></div>
+        <div>
+          <label className="form-label" htmlFor="scope">
+            Estimated Scope
+          </label>
+          <input
+            id="scope"
+            name="scope"
+            value={form.scope}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="e.g., 3 storefronts, 2-story building"
+          />
+        </div>
       </div>
-      <div><label className="form-label">Preferred Schedule</label><input name="schedule" value={form.schedule} onChange={handleChange} className="form-input" placeholder="e.g., Early morning before 8am, weekdays only" /></div>
-      <div><label className="form-label">Notes</label><textarea name="notes" value={form.notes} onChange={handleChange} className="form-input" rows={3} placeholder="Any special requirements, access notes, or questions..." /></div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <button type="submit" disabled={loading} className="btn-coral text-base py-3.5 justify-center disabled:opacity-60">
-        {loading ? <><Loader2 size={16} className="animate-spin" /> Submitting...</> : "Submit Commercial Bid Request"}
+      <div>
+        <label className="form-label" htmlFor="schedule">
+          Preferred Schedule
+        </label>
+        <input
+          id="schedule"
+          name="schedule"
+          value={form.schedule}
+          onChange={handleChange}
+          className="form-input"
+          placeholder="e.g., Early morning before 8am, weekdays only"
+        />
+      </div>
+      <div>
+        <label className="form-label" htmlFor="business-notes">
+          Notes
+        </label>
+        <textarea
+          id="business-notes"
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          className="form-input"
+          rows={3}
+          placeholder="Any special requirements, access notes, or questions..."
+        />
+      </div>
+      {error && (
+        <p className="text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={loading}
+        className="btn-coral justify-center py-3.5 text-base disabled:opacity-60"
+      >
+        {loading ? (
+          <>
+            <Loader2 size={16} className="animate-spin" /> Submitting...
+          </>
+        ) : (
+          "Send Commercial Request"
+        )}
       </button>
-      <p className="text-xs text-gray-400 text-center">We respond the same business day. Your information is never shared.</p>
+      <p className="text-center text-xs text-gray-400">
+        Your information is used to respond to this request.
+      </p>
     </form>
   );
 }
@@ -228,62 +598,113 @@ function CommercialForm() {
 export default function GetEstimate() {
   useSEO(
     "Get a Free Estimate | Next Level Window Cleaning Sanford, NC",
-    "Request a free window cleaning or pressure washing estimate in Sanford, NC. Same-day response. Locally owned, fully insured.",
+    "Request a free window cleaning or exterior cleaning estimate in Sanford, NC. Locally owned and fully insured.",
     "/get-a-free-estimate"
   );
   const [formType, setFormType] = useState<FormType>("residential");
   return (
     <Layout>
-      <BreadcrumbSchema items={[{"name":"Home","url":"/"},{"name":"Get a Free Estimate","url":"/get-a-free-estimate"}]} />
-      {/* Header */}
-      <section className="py-12 bg-sky-tint border-b border-gray-200">
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Get a Free Estimate", url: "/get-a-free-estimate" },
+        ]}
+      />
+      <section className="border-b border-gray-200 bg-sky-tint py-12">
         <div className="container max-w-2xl text-center">
-          <nav className="text-gray-400 text-xs mb-4 flex items-center justify-center gap-1.5" style={{ fontFamily: 'Manrope, sans-serif' }}>
-            <Link href="/"><span className="hover:text-gray-600 cursor-pointer">Home</span></Link><span>/</span>
+          <nav
+            className="mb-4 flex items-center justify-center gap-1.5 text-xs text-gray-400"
+            aria-label="Breadcrumb"
+            style={{ fontFamily: "Manrope, sans-serif" }}
+          >
+            <Link href="/">
+              <span className="cursor-pointer hover:text-gray-600">Home</span>
+            </Link>
+            <span>/</span>
             <span className="text-gray-600">Get a Free Estimate</span>
           </nav>
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-3" style={{ fontFamily: 'Manrope, sans-serif' }}>Get a Free Estimate</h1>
-          <p className="text-gray-600 mb-2">Fill out the form below and we'll get back to you the same day.</p>
-          <p className="text-sm text-gray-500">Prefer to call? <a href={PHONE_HREF} className="font-semibold" style={{ color: 'var(--brand-aqua)' }}>{PHONE}</a> — call or text anytime.</p>
+          <h1
+            className="mb-3 text-3xl font-extrabold text-gray-900 lg:text-4xl"
+            style={{ fontFamily: "Manrope, sans-serif" }}
+          >
+            Get a Free Estimate
+          </h1>
+          <p className="mb-2 text-gray-600">
+            Tell us about your property and the service you have in mind.
+          </p>
+          <p className="text-sm text-gray-500">
+            Prefer to call?{" "}
+            <a
+              href={PHONE_HREF}
+              className="font-semibold"
+              style={{ color: "var(--brand-aqua)" }}
+            >
+              {PHONE_DISPLAY}
+            </a>{" "}
+            — call or text.
+          </p>
         </div>
       </section>
-
-      {/* Form */}
-      <section className="py-12 bg-white">
+      <section className="bg-white py-12">
         <div className="container max-w-2xl">
-          {/* Type selector */}
-          <div className="flex rounded-xl overflow-hidden border border-gray-200 mb-8">
-            <button onClick={() => setFormType("residential")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3.5 font-bold text-sm transition-colors ${formType === "residential" ? "text-white" : "text-gray-600 bg-white hover:bg-gray-50"}`}
-              style={{ fontFamily: 'Manrope, sans-serif', backgroundColor: formType === "residential" ? 'var(--brand-aqua)' : undefined }}>
+          <div
+            className="mb-8 flex overflow-hidden rounded-xl border border-gray-200"
+            aria-label="Estimate type"
+          >
+            <button
+              type="button"
+              onClick={() => setFormType("residential")}
+              aria-pressed={formType === "residential"}
+              className={`flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-bold transition-colors ${formType === "residential" ? "text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+              style={{
+                fontFamily: "Manrope, sans-serif",
+                backgroundColor:
+                  formType === "residential" ? "var(--brand-aqua)" : undefined,
+              }}
+            >
               <HomeIcon size={16} /> Residential
             </button>
-            <button onClick={() => setFormType("commercial")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3.5 font-bold text-sm transition-colors border-l border-gray-200 ${formType === "commercial" ? "text-white" : "text-gray-600 bg-white hover:bg-gray-50"}`}
-              style={{ fontFamily: 'Manrope, sans-serif', backgroundColor: formType === "commercial" ? 'var(--brand-aqua)' : undefined }}>
+            <button
+              type="button"
+              onClick={() => setFormType("commercial")}
+              aria-pressed={formType === "commercial"}
+              className={`flex flex-1 items-center justify-center gap-2 border-l border-gray-200 py-3.5 text-sm font-bold transition-colors ${formType === "commercial" ? "text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+              style={{
+                fontFamily: "Manrope, sans-serif",
+                backgroundColor:
+                  formType === "commercial" ? "var(--brand-aqua)" : undefined,
+              }}
+            >
               <Building2 size={16} /> Commercial
             </button>
           </div>
-
-          {formType === "residential" ? <ResidentialForm /> : <CommercialForm />}
-
-          {/* Trust signals */}
-          <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap justify-center gap-5">
-            {["Fully Insured", "Locally Owned", "Same-Day Response", "No Spam, Ever"].map((t) => (
-              <span key={t} className="flex items-center gap-1.5 text-xs text-gray-500 font-semibold" style={{ fontFamily: 'Manrope, sans-serif' }}>
-                <CheckCircle size={13} style={{ color: 'var(--brand-aqua)' }} /> {t}
+          {formType === "residential" ? (
+            <ResidentialForm />
+          ) : (
+            <CommercialForm />
+          )}
+          <div className="mt-8 flex flex-wrap justify-center gap-5 border-t border-gray-100 pt-6">
+            {["Fully Insured", "Locally Owned", "Free Estimates"].map(item => (
+              <span
+                key={item}
+                className="flex items-center gap-1.5 text-xs font-semibold text-gray-500"
+                style={{ fontFamily: "Manrope, sans-serif" }}
+              >
+                <CheckCircle size={13} style={{ color: "var(--brand-aqua)" }} />{" "}
+                {item}
               </span>
             ))}
           </div>
         </div>
       </section>
-
-      {/* Contact alternative */}
-      <section className="py-10 bg-sky-tint">
+      <section className="bg-sky-tint py-10">
         <div className="container max-w-2xl text-center">
-          <p className="text-gray-600 mb-3">Rather talk to someone directly?</p>
-          <a href={PHONE_HREF} className="btn-coral text-base px-8 py-3.5 inline-flex">
-            <Phone size={17} /> Call or Text {PHONE}
+          <p className="mb-3 text-gray-600">Rather talk to someone directly?</p>
+          <a
+            href={PHONE_HREF}
+            className="btn-coral inline-flex px-8 py-3.5 text-base"
+          >
+            <Phone size={17} /> Call or Text {PHONE_DISPLAY}
           </a>
         </div>
       </section>
