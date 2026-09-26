@@ -8,7 +8,7 @@
 - Windows That Look Brand New  `27c`
 - Fast, Kind, Professional  `23c`
 - House Looks Brand New  `21c`
-- Sanborn-Approved Cleaners  `24c` *(fix to: "Sanford-Approved")*
+- Sanford-Approved Cleaners  `24c`
 - 5★ Window Cleaning in Sanford  `29c`
 - On Time. Every Time.  `21c`
 - Plant-Safe House Washing  `24c`
