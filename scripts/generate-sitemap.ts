@@ -10,6 +10,10 @@ const EXCLUDE = new Set(["/404", "/privacy", "/terms"]);
 
 const routes = Object.keys(seoMap).filter((r) => !EXCLUDE.has(r));
 
+function canonicalPath(route: string): string {
+  return route === "/" ? "/" : `${route.replace(/\/+$/, "")}/`;
+}
+
 function getPriority(route: string): string {
   if (route === "/") return "1.0";
   if (route === "/get-a-free-estimate") return "1.0";
@@ -29,7 +33,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
 ${routes
   .map(
     (route) => `  <url>
-    <loc>${BASE_URL}${route}</loc>
+    <loc>${BASE_URL}${canonicalPath(route)}</loc>
     <changefreq>${getChangefreq(route)}</changefreq>
     <priority>${getPriority(route)}</priority>
   </url>`

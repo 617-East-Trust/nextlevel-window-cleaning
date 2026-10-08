@@ -5,6 +5,10 @@ import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import { seoMap } from "./seoMap.js";
 
+function canonicalPath(pathname: string): string {
+  return pathname === "/" ? "/" : `${pathname.replace(/\/+$/, "")}/`;
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -40,14 +44,17 @@ async function startServer() {
       const seo = seoMap[req.path] || seoMap["/"];
       const titleStr = `<title>${seo.title}</title>`;
       const descStr = `<meta name="description" content="${seo.description}" />`;
-      const canonStr = `<link rel="canonical" href="https://nextlevelwindowsnc.com${req.path === '/' ? '' : req.path}" />`;
+      const canonStr = `<link rel="canonical" href="https://nextlevelwindowsnc.com${canonicalPath(req.path)}" />`;
 
       // Replace default title
       html = html.replace(/<title>.*?<\/title>/i, titleStr);
       // Replace default description
       html = html.replace(/<meta name="description" content=".*?"\s*\/>/i, descStr);
-      // Replace default canonical
-      html = html.replace(/<link rel="canonical" href=".*?"\s*\/>/i, canonStr);
+      // Replace or add the canonical tag. The static template intentionally has no default canonical.
+      const canonicalPattern = /<link rel="canonical" href=".*?"\s*\/>/i;
+      html = canonicalPattern.test(html)
+        ? html.replace(canonicalPattern, canonStr)
+        : html.replace(/<\/head>/i, `    ${canonStr}\n  </head>`);
 
       res.send(html);
     } catch (e) {
