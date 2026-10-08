@@ -5,6 +5,10 @@ import { useEffect } from "react";
 
 const SITE_URL = "https://nextlevelwindowsnc.com";
 
+function canonicalPath(pathname: string): string {
+  return pathname === "/" ? "/" : `${pathname.replace(/\/+$/, "")}/`;
+}
+
 const useSEO = (title: string, description: string, path?: string) => {
   useEffect(() => {
     // 1. Update document title
@@ -31,7 +35,7 @@ const useSEO = (title: string, description: string, path?: string) => {
     // 4. Update canonical tag to be self-canonical (critical for SEO)
     // Each page's canonical should point to itself, not the homepage
     const currentPath = path || window.location.pathname;
-    const canonicalUrl = `${SITE_URL}${currentPath}`;
+    const canonicalUrl = `${SITE_URL}${canonicalPath(currentPath)}`;
     
     let canonicalTag = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonicalTag) {
